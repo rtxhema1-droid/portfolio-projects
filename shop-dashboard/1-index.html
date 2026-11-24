@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة طلبات ومخزون</title>
+<style>
+:root{--ink:#1d2330;--muted:#69707f;--bg:#f3f5f9;--card:#fff;--line:#e2e6ee;--accent:#2f5fd0;--warn:#c2410c}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+h1{margin:0;font-size:20px}main{max-width:1000px;margin:0 auto;padding:18px 16px 40px}
+.loaders{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}.loaders label{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.loaders input{display:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.card .n{font-size:26px;font-weight:700;margin-top:4px}.card .l{color:var(--muted);font-size:13px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:18px}
+h2{margin:0 0 10px;font-size:16px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;font-size:14px}
+th{color:var(--muted);font-weight:600}.low{color:var(--warn);font-weight:700}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px}.bar span.d{width:90px;color:var(--muted)}
+.bar i{display:block;height:16px;background:var(--accent);border-radius:4px;min-width:2px}
+.note{font-size:13px;color:var(--muted)}.err{color:#b91c1c;font-size:13px}
+</style>
+</head>
+<body>
+<header><h1>لوحة الطلبات والمخزون</h1>
+<div class="loaders">
+  <label>رفع ملف الطلبات (CSV)<input type="file" id="f-orders" accept=".csv"></label>
+  <label>رفع ملف المخزون (CSV)<input type="file" id="f-stock" accept=".csv"></label>
+  <label><button id="reset" style="all:unset;cursor:pointer">رجوع للبيانات التجريبية</button></label>
+</div></header>
+<main>
+  <p class="note" id="source">البيانات المعروضة تجريبية. الملفات اللي ترفعها بتتقرأ في متصفحك ومبتتبعتش لأي مكان.</p>
+  <p class="err" id="error"></p>
+  <div class="cards" id="cards"></div>
+  <section><h2>الإيراد اليومي</h2><div id="daily"></div></section>
+  <section><h2>أكثر المنتجات مبيعًا</h2><table id="top"></table></section>
+  <section><h2>المخزون</h2><table id="stock"></table><p class="note">المنتجات تحت الحد الأدنى باللون البرتقالي.</p></section>
+</main>
+<script src="data.js"></script>
+<script src="dashboard.js"></script>
+</body></html>
