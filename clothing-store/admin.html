@@ -3,48 +3,70 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة الإدارة</title><link rel="stylesheet" href="style.css"></head>
 <body>
-<header><h1>لوحة الإدارة</h1><a class="btn" href="index.html">المتجر</a></header>
+<header><h1 class="brand">لوحة الإدارة</h1>
+  <div class="actions"><button class="ghost" id="reset">إعادة البيانات التجريبية</button><a class="btn" href="index.html">المتجر</a></div></header>
 <main>
-  <p class="note">نسخة تجريبية: البيانات محفوظة في متصفحك فقط، ومفيش تسجيل دخول. النسخة الحقيقية تحتاج سيرفر وقاعدة بيانات.</p>
+  <div class="notice">نسخة تجريبية: البيانات محفوظة في متصفحك فقط وبدون تسجيل دخول. في مشروع حقيقي لازم سيرفر وقاعدة بيانات وتسجيل دخول للإدارة.</div>
   <h2>إضافة منتج</h2>
-  <form id="add">
-    <input name="name" placeholder="اسم المنتج" required>
-    <input name="price" type="number" min="1" placeholder="السعر" required>
-    <input name="sizes" placeholder="المقاسات مفصولة بفاصلة: S,M,L" required>
-    <input name="colors" placeholder="الألوان مفصولة بفاصلة" required>
-    <input name="stock" type="number" min="0" placeholder="الكمية" required>
+  <form id="add" class="admin-form">
+    <label>الاسم<input name="name" required></label>
+    <label>النوع<select name="type"></select></label>
+    <label>السعر (ج.م)<input name="price" type="number" min="1" required></label>
+    <label>المقاسات (بفاصلة)<input name="sizes" placeholder="S,M,L" required></label>
+    <label>الألوان (بفاصلة)<input name="colors" placeholder="أسود,أبيض" required></label>
+    <label>الكمية<input name="stock" type="number" min="0" required></label>
     <button>إضافة</button>
   </form>
   <h2>المنتجات</h2>
-  <table id="products"></table>
+  <div class="table-wrap"><table id="products"></table></div>
   <h2>الطلبات</h2>
-  <table id="orders"></table>
+  <div class="table-wrap"><table id="orders"></table></div>
 </main>
 <script src="products.js"></script>
 <script>
-const COLORS = ["#c9b6a0","#7aa6a1","#b07a7a","#8f9bb3","#a8a37a"];
+const $ = (id) => document.getElementById(id);
+$("add").elements.type.innerHTML = Object.entries(TYPE_LABELS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+const STATUSES = ["جديد", "تم الشحن", "تم التسليم", "ملغي"];
+
 function draw() {
   const ps = loadProducts();
-  document.getElementById("products").innerHTML =
-    "<tr><th>المنتج</th><th>السعر</th><th>الكمية</th><th></th></tr>" +
-    ps.map((p) => `<tr><td>${p.name}</td>
-      <td><input type="number" value="${p.price}" onchange="edit(${p.id},'price',this.value)"></td>
-      <td><input type="number" value="${p.stock}" onchange="edit(${p.id},'stock',this.value)"></td>
-      <td><button class="ghost" onclick="del(${p.id})">حذف</button></td></tr>`).join("");
+  $("products").innerHTML = "<tr><th>المنتج</th><th>السعر</th><th>الكمية</th><th></th></tr>" +
+    ps.map((p) => `<tr><td>${esc(p.name)}<div class="muted">${esc(p.sizes.join(", "))} | ${esc(p.colors.join(", "))}</div></td>
+      <td><input type="number" min="1" value="${p.price}" data-edit="${p.id}|price" aria-label="السعر"></td>
+      <td><input type="number" min="0" value="${p.stock}" data-edit="${p.id}|stock" aria-label="الكمية"></td>
+      <td><button class="ghost small" data-del="${p.id}">حذف</button></td></tr>`).join("");
   const os = loadOrders();
-  document.getElementById("orders").innerHTML =
-    "<tr><th>رقم</th><th>العميل</th><th>الموبايل</th><th>العنوان</th><th>الإجمالي</th><th>الحالة</th></tr>" +
-    (os.length ? os.map((o) => `<tr><td>${o.number}</td><td>${o.name}</td><td>${o.phone}</td><td>${o.address}</td><td>${o.total}</td><td>${o.status}</td></tr>`).join("")
-      : '<tr><td colspan="6" class="note">مفيش طلبات لسه</td></tr>');
+  $("orders").innerHTML = "<tr><th>رقم</th><th>العميل</th><th>التفاصيل</th><th>الإجمالي</th><th>الحالة</th></tr>" +
+    (os.length ? os.map((o, i) => `<tr><td>${o.number}<div class="muted">${esc(o.date)}</div></td>
+      <td>${esc(o.name)}<div class="muted">${esc(o.phone)}<br>${esc(o.address)}</div></td>
+      <td>${o.items.map((l) => `${esc(l.name)} (${esc(l.size)}، ${esc(l.color)}) × ${l.qty}`).join("<br>")}</td>
+      <td>${o.total} ج.م</td>
+      <td><select data-status="${i}">${STATUSES.map((s) => `<option ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}</select></td></tr>`).join("")
+      : '<tr><td colspan="5" class="muted">مفيش طلبات لسه</td></tr>');
 }
-function edit(id, k, v) { const ps = loadProducts(); ps.find((p) => p.id === id)[k] = Number(v); saveProducts(ps); }
-function del(id) { saveProducts(loadProducts().filter((p) => p.id !== id)); draw(); }
-document.getElementById("add").onsubmit = (e) => {
+
+document.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.edit) {
+    const [id, key] = t.dataset.edit.split("|");
+    const v = Number(t.value);
+    if (!(v >= 0)) { draw(); return; }
+    const ps = loadProducts(); ps.find((p) => p.id === Number(id))[key] = v; saveProducts(ps);
+  } else if (t.dataset.status) {
+    const os = loadOrders(); os[Number(t.dataset.status)].status = t.value; saveOrders(os);
+  }
+});
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (t && t.dataset.del) { saveProducts(loadProducts().filter((p) => p.id !== Number(t.dataset.del))); draw(); }
+});
+$("reset").onclick = () => { if (confirm("مسح الطلبات ورجوع المنتجات للبيانات التجريبية؟")) { resetDemo(); draw(); } };
+$("add").onsubmit = (e) => {
   e.preventDefault();
   const f = new FormData(e.target), ps = loadProducts();
   const split = (s) => s.split(",").map((x) => x.trim()).filter(Boolean);
-  ps.push({ id: Date.now(), name: f.get("name"), price: Number(f.get("price")), sizes: split(f.get("sizes")),
-    colors: split(f.get("colors")), color: COLORS[ps.length % COLORS.length], stock: Number(f.get("stock")) });
+  ps.push({ id: Date.now(), name: f.get("name").trim(), type: f.get("type"), price: Number(f.get("price")),
+    sizes: split(f.get("sizes")), colors: split(f.get("colors")), stock: Number(f.get("stock")) });
   saveProducts(ps); e.target.reset(); draw();
 };
 draw();
