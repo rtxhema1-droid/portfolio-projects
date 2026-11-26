@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffd36b">
+<title>فريش جوس - نسخة تجريبية</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e4572e' d='M6 9h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8z'/%3E%3Cpath fill='%23fff' opacity='.75' d='M5 6h14v2H5z'/%3E%3Cpath stroke='%232b2118' stroke-width='1.6' fill='none' stroke-linecap='round' d='M13.5 2 11.5 7'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-cart" viewBox="0 0 24 24"><circle class="f" cx="9.5" cy="20" r="1.5"/><circle class="f" cx="17" cy="20" r="1.5"/><path d="M3 3.5h2.2l2.3 11.7a2 2 0 0 0 2 1.6h7.3a2 2 0 0 0 2-1.6L20.5 7H6"/></symbol>
+  <symbol id="i-cup" viewBox="0 0 24 24"><path d="M6 9h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8z"/><path d="M5 6h14"/><path d="M13.5 2 11.5 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M20.5 5.5A9 9 0 1 0 21 12"/><path d="M21 3.5v5h-5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l.9 12.5a2 2 0 0 0 2 1.8h5.2a2 2 0 0 0 2-1.8L17.5 7"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11.5V16"/></symbol>
+</svg>
+<header>
+  <h1 class="brand"><span class="logo"><svg class="ic"><use href="#i-cup"/></svg></span>فريش<span>جوس</span></h1>
+  <button id="open-cart"><svg class="ic"><use href="#i-cart"/></svg>طلبي (<span id="count">0</span>)</button>
+</header>
+<section class="hero">
+  <div>
+    <h2>عصاير طازة،<br>معصورة قدامك</h2>
+    <p>مانجو، موز، تفاح، فراولة وأكتر. اختار نوعك وشوفه في الكوباية.</p>
+    <button class="light" id="spin-hint"><svg class="ic"><use href="#i-rotate"/></svg>اسحب الكوباية لتدويرها</button>
+  </div>
+  <div class="stage">
+    <canvas id="c" aria-label="كوباية عصير ثلاثية الأبعاد"></canvas>
+    <div class="fallback" id="fallback" aria-hidden="true">
+      <svg viewBox="0 0 120 170"><path d="M25 30h70l-6 118a10 10 0 0 1-10 9H41a10 10 0 0 1-10-9z" fill="#fff" opacity=".55"/><path d="M29 55h62l-5 93a9 9 0 0 1-9 8H43a9 9 0 0 1-9-8z" fill="#e4572e" opacity=".85"/><path d="M72 8 60 42" stroke="#e23d4b" stroke-width="6" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+</section>
+<p class="note">نسخة تجريبية: الأسماء والأسعار مثال، والطلب بيتسجل في الصفحة دي بس ومش بيتبعت لأي محل.</p>
+<main>
+  <h3>المنيو</h3>
+  <div class="menu" id="menu"></div>
+</main>
+<aside class="panel" id="cart" aria-label="طلبي">
+  <div class="row"><h3>طلبي</h3><button class="light" id="close-cart"><svg class="ic"><use href="#i-x"/></svg>إغلاق</button></div>
+  <div id="lines"></div>
+  <p class="total"><b>الإجمالي: <span id="total">0</span> ج.م</b></p>
+  <form id="order">
+    <label>الاسم<input name="name" required></label>
+    <label>الموبايل<input name="phone" required pattern="01[0-9]{9}" inputmode="numeric" title="رقم مصري من 11 رقم"></label>
+    <button><svg class="ic"><use href="#i-check"/></svg>تسجيل الطلب</button>
+  </form>
+  <div id="msg" aria-live="polite"></div>
+</aside>
+<script type="module" src="app.js"></script>
+</body>
+</html>
