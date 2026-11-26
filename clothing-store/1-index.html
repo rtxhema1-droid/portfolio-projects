@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f2ea">
+<title>متجر ملابس - نسخة تجريبية</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23b4532a' d='M14.5 3a2.5 2.5 0 0 1-5 0H6L2.5 7.5 5 10l1-1v12h12V9l1 1 2.5-2.5L18 3z'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-cart" viewBox="0 0 24 24"><circle class="f" cx="9.5" cy="20" r="1.5"/><circle class="f" cx="17" cy="20" r="1.5"/><path d="M3 3.5h2.2l2.3 11.7a2 2 0 0 0 2 1.6h7.3a2 2 0 0 0 2-1.6L20.5 7H6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11.5V16"/></symbol>
+</svg>
+<header>
+  <h1 class="brand">ستايل<span>.</span>هاوس</h1>
+  <div class="actions">
+    <a class="btn ghost" href="admin.html"><svg class="ic"><use href="#i-gear"/></svg>الإدارة</a>
+    <button id="open-cart"><svg class="ic"><use href="#i-cart"/></svg>السلة (<span id="count">0</span>)</button>
+  </div>
+</header>
+<section class="hero"><h2>ملابس يومية بسيطة</h2><p>اختار المقاس واللون، واطلب والدفع عند الاستلام</p></section>
+<main>
+  <div class="notice"><svg class="ic"><use href="#i-info"/></svg>نسخة تجريبية: المنتجات والأسعار وهمية، والطلبات بتتحفظ في متصفحك بس ومبتتبعتش لأي حد.</div>
+  <div id="filters" class="filters" role="group" aria-label="التصنيفات"></div>
+  <div id="grid" class="grid"></div>
+</main>
+<aside id="cart" class="panel" aria-label="السلة">
+  <div class="panel-head"><h2>السلة</h2><button class="ghost" id="close-cart"><svg class="ic"><use href="#i-x"/></svg>إغلاق</button></div>
+  <div id="cart-lines"></div>
+  <div class="total">الإجمالي: <span id="total">0</span> ج.م</div>
+  <form id="order-form">
+    <label>الاسم<input name="name" required autocomplete="name"></label>
+    <label>رقم الموبايل<input name="phone" required inputmode="numeric" pattern="01[0-9]{9}" title="رقم مصري من 11 رقم يبدأ بـ 01" autocomplete="tel"></label>
+    <label>العنوان<textarea name="address" rows="2" required></textarea></label>
+    <p class="muted">الدفع عند الاستلام.</p>
+    <button type="submit"><svg class="ic"><use href="#i-check"/></svg>تسجيل الطلب</button>
+  </form>
+  <div id="msg" aria-live="polite"></div>
+</aside>
+<script src="products.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
